@@ -1,0 +1,466 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<style>
+    /* For delete */
+    body {
+        background-color: white;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    *:focus {
+        outline: none;
+    }
+
+    .calc_wrapper {
+        max-width: 320px;
+        margin: auto;
+    }
+
+    /* Input */
+
+    .calc_wrapper input {
+        border: 2px solid #333;
+        padding: 5px 30px 5px 10px;
+        margin: 0;
+        width: 170px;
+    }
+
+    /* input */
+
+    /* Select */
+
+    .pp_select {
+        position: relative;
+        display: block;
+        margin: 0;
+        width: 170px;
+    }
+
+    .pp_selected {
+        display: inline-block;
+        border: 2px solid #333;
+        padding: 5px 30px 5px 10px;
+        width: 100%;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+    }
+
+    .pp_selected:after {
+        content: "";
+        background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJMYXllcl8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ5Mi4wMDQgNDkyLjAwNCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDkyLjAwNCA0OTIuMDA0OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiPjxnIHRyYW5zZm9ybT0ibWF0cml4KC0xLjgzNjk3ZS0xNiAxIC0xIC0xLjgzNjk3ZS0xNiA0OTIuMDA0IDguNTI2NTFlLTE0KSI+PGc+Cgk8Zz4KCQk8cGF0aCBkPSJNMzgyLjY3OCwyMjYuODA0TDE2My43Myw3Ljg2QzE1OC42NjYsMi43OTIsMTUxLjkwNiwwLDE0NC42OTgsMHMtMTMuOTY4LDIuNzkyLTE5LjAzMiw3Ljg2bC0xNi4xMjQsMTYuMTIgICAgYy0xMC40OTIsMTAuNTA0LTEwLjQ5MiwyNy41NzYsMCwzOC4wNjRMMjkzLjM5OCwyNDUuOWwtMTg0LjA2LDE4NC4wNmMtNS4wNjQsNS4wNjgtNy44NiwxMS44MjQtNy44NiwxOS4wMjggICAgYzAsNy4yMTIsMi43OTYsMTMuOTY4LDcuODYsMTkuMDRsMTYuMTI0LDE2LjExNmM1LjA2OCw1LjA2OCwxMS44MjQsNy44NiwxOS4wMzIsNy44NnMxMy45NjgtMi43OTIsMTkuMDMyLTcuODZMMzgyLjY3OCwyNjUgICAgYzUuMDc2LTUuMDg0LDcuODY0LTExLjg3Miw3Ljg0OC0xOS4wODhDMzkwLjU0MiwyMzguNjY4LDM4Ny43NTQsMjMxLjg4NCwzODIuNjc4LDIyNi44MDR6IiBkYXRhLW9yaWdpbmFsPSIjMDAwMDAwIiBjbGFzcz0iYWN0aXZlLXBhdGgiIHN0eWxlPSJmaWxsOiMzMzMzMzMiIGRhdGEtb2xkX2NvbG9yPSIjMDAwMDAwIj48L3BhdGg+Cgk8L2c+CjwvZz48L2c+IDwvc3ZnPg==);
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: 13px;
+        width: 13px;
+        top: 0;
+        right: 5px;
+        bottom: 0;
+        margin: auto;
+        position: absolute;
+    }
+
+    .pp_options {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: #fff;
+        z-index: 1;
+    }
+
+    .pp_options.active {
+        display: inline-block;
+    }
+
+    .pp_options span {
+        display: block;
+        padding: 5px 10px 5px 10px;
+        margin-top: -1px;
+        border: 1px solid #333;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .pp_options span:hover {
+        background-color: #dedede;
+    }
+
+    /* select */
+
+    /* Radio */
+
+    .pp_radiogroup {
+        display: flex;
+    }
+
+    .pp_radio {
+        padding-left: 20px;
+        margin: 0 20px 0 0;
+        cursor: pointer;
+        user-select: none;
+        position: relative;
+    }
+
+    .pp_radio:before {
+        content: "";
+        display: block;
+        width: 12px;
+        height: 12px;
+        border: 2px solid #333;
+        border-radius: 50%;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        margin: auto;
+        position: absolute;
+    }
+
+    .pp_radio.checked:after {
+        content: "";
+        display: block;
+        width: 2px;
+        height: 2px;
+        background-color: #333;
+        border: 2px solid transparent;
+        border-radius: 50%;
+        top: 0;
+        bottom: 0;
+        left: 5px;
+        margin: auto;
+        position: absolute;
+    }
+
+    /* radio */
+
+    .calc_row {
+        display: flex;
+        margin: 20px 0;
+        align-items: flex-start;
+    }
+
+    .row_title {
+        width: 140px;
+    }
+
+    .calc_montage .pp_radiogroup {
+        margin-bottom: 10px;
+    }
+
+    .calc_montage .pp_select {
+        display: none;
+    }
+
+    .calc_montage .pp_select.active {
+        display: block;
+    }
+
+    .calc_form {
+        margin-top: 50px;
+    }
+
+    .calc_form_title {
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .calc_form .result input {
+        display: block;
+        margin: 10px auto;
+    }
+
+    .calc_form .result .phone.error {
+        border-color: red;
+    }
+
+    .calc_form .result input[type="submit"] {
+        cursor: pointer;
+    }
+
+    .calc_form .result input[type="submit"]:disabled {
+        cursor: not-allowed;
+    }
+
+    .calc_form .result input[type="submit"]:hover {
+        background-color: black;
+        color: white;
+    }
+
+    .calc_form .result input[type="submit"]:disabled:hover {
+        background-color: inherit !important;
+        color: inherit !important;
+    }
+</style>
+
+<div class="calc_wrapper">
+    <div class="calc_row calc_area">
+        <div class="row_title">Площадь фасада</div>
+        <input type="text" data-validate="number" value="5">
+    </div>
+    <div class="calc_row calc_thickness">
+        <div class="row_title">Толщина панели</div>
+        <div class="pp_select">
+            <div class="pp_selected" data-value="0">Выбрать</div>
+            <div class="pp_options">
+                <span data-value="14">14 мм</span>
+                <span data-value="16">16 мм</span>
+                <span data-value="18">18 мм</span>
+            </div>
+        </div>
+    </div>
+    <div class="calc_row calc_warm">
+        <div class="row_title">Утепление</div>
+        <div class="row_enter">
+            <div class="pp_radiogroup">
+                <div class="pp_radio" data-value="100">Да</div>
+                <div class="pp_radio checked" data-value="0">Нет</div>
+            </div>
+        </div>
+    </div>
+    <div class="calc_row calc_subsystem">
+        <div class="row_title">Подсистема с доп. элементами</div>
+        <div class="pp_select">
+            <div class="pp_selected" data-value="0">Выбрать</div>
+            <div class="pp_options">
+                <span data-value="100">Металлическая</span>
+                <span data-value="300">Деревянная</span>
+            </div>
+        </div>
+    </div>
+    <div class="calc_row calc_montage">
+        <div class="row_title">Монтаж</div>
+        <div class="row_enter">
+            <div class="pp_radiogroup">
+                <div class="pp_radio" data-value="true">Да</div>
+                <div class="pp_radio checked" data-value="false">Нет</div>
+            </div>
+            <div class="pp_select">
+                <div class="pp_selected" data-value="0">Выбрать</div>
+                <div class="pp_options">
+                    <span data-value="100">Металлическая</span>
+                    <span data-value="200">Деревянная</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="calc_row result">
+        <div class="row_title">Итого</div>
+        <div class="row_result">
+            0 руб
+        </div>
+    </div>
+
+    <form class="calc_form">
+        <div class="calc_form_title">
+            Отправить заявку
+        </div>
+        <div class="result">
+            <input type="hidden" name="theme" value="Заявка с сайта">
+            <input type="text" name="name" placeholder="Ваше имя">
+            <input type="text" name="phone" placeholder="Контактный телефон" class="phone">
+            <input type="submit">
+        </div>
+    </form>
+</div>
+
+
+<script>
+
+    // Площадь фасада
+    let areaFasad = document.querySelector('.calc_area input');
+    if (areaFasad) {
+        areaFasad.addEventListener('input', () => calc());
+    }
+
+    // Монтаж
+    let radioMontage = document.querySelectorAll('.calc_montage .pp_radiogroup .pp_radio');
+    let selectMontage = document.querySelector('.calc_montage .pp_select');
+    radioMontage.forEach(radio => {
+        radio.addEventListener('click', ({target}) => {
+            target.dataset.value === 'true' ? selectMontage.classList.add('active') : selectMontage.classList.remove('active');
+            calc()
+        });
+    })
+
+    // Select
+    let pp_selects = document.querySelectorAll('.pp_select');
+    if (pp_selects) {
+        pp_selects.forEach(select => {
+            let selected = select.querySelector('.pp_selected');
+            let list = select.querySelector('.pp_options');
+            let options = select.querySelectorAll('.pp_options span');
+            select.addEventListener('click', () => {
+                list.classList.toggle('active');
+            })
+            options.forEach(option => {
+                option.addEventListener('click', () => {
+                    selected.innerHTML = option.innerHTML;
+                    selected.dataset.value = option.dataset.value;
+                    calc()
+                })
+            })
+            document.addEventListener('click', ({target}) => {
+                if (list.classList.contains('active') && !target.classList.contains('pp_selected')) {
+                    list.classList.toggle('active')
+                }
+            })
+        })
+    }
+
+    // Radio
+    let pp_radiogroups = document.querySelectorAll('.pp_radiogroup');
+    if (pp_radiogroups) {
+        pp_radiogroups.forEach(radiogroup => {
+            let radios = radiogroup.querySelectorAll('.pp_radio');
+            radios.forEach(radio => {
+                radio.addEventListener('click', e => {
+                    radios.forEach(i => i.classList.remove('checked'));
+                    radio.classList.add('checked');
+                    calc()
+                })
+            })
+        })
+    }
+
+    // Validate number
+    document.querySelectorAll('input').forEach(input => {
+        if (input.dataset && input.dataset.validate === 'number') {
+            input.addEventListener('input', function (e) {
+                let str = e.target.value;
+                if (!e.target.value || e.target.value < 1) {
+                    e.target.value = 0
+                } else {
+                    e.target.value = str.toString().replace(/(^0|[A-Za-zА-Яа-яЁё]|\W)/, '').replace(/\s/g, '');
+                }
+            });
+        }
+    });
+
+    // Validate phone + маска
+    let phoneInput = document.querySelector('.calc_wrapper .phone')
+    phoneInput.addEventListener('click', () => {
+        if (!phoneInput.value || phoneInput.value.length < 4) {
+            phoneInput.value = '+7 ('
+        }
+    });
+    phoneInput.addEventListener('blur', () => {
+        if (phoneInput.value.length <= 4) {
+            phoneInput.value = ''
+        }
+    });
+    phoneInput.addEventListener('keydown', function (event) {
+        if (!(event.key == 'ArrowLeft' || event.key == 'ArrowRight' || event.key == 'Backspace' || event.key == 'Tab')) {
+            event.preventDefault()
+        }
+        let mask = '+7 (111) 111-11-11'; // Задаем маску
+        if (/[0-9\+\ \-\(\)]/.test(event.key)) {
+            // Здесь начинаем сравнивать this.value и mask
+            // к примеру опять же
+            let currentString = this.value;
+            let currentLength = currentString.length;
+            if (/[0-9]/.test(event.key)) {
+                if (mask[currentLength] == '1') {
+                    this.value = currentString + event.key;
+                } else {
+                    for (let i = currentLength; i < mask.length; i++) {
+                        if (mask[i] == '1') {
+                            this.value = currentString + event.key;
+                            break;
+                        }
+                        currentString += mask[i];
+                    }
+                }
+            }
+        }
+    });
+
+    // Объект для отправки
+    let obj = {};
+
+    function calc() {
+
+        // Цены
+        let area = parseInt(document.querySelector('.calc_area input').value) || 0;
+        let panel = parseInt(document.querySelector('.calc_thickness .pp_selected').dataset.value); // Панель
+        let winterizing = parseInt(document.querySelector('.calc_warm .pp_radio.checked').dataset.value); // Утепление
+        let subsystem = parseInt(document.querySelector('.calc_subsystem .pp_selected').dataset.value); // Подсистема с доп.элементами
+        let montage = document.querySelector('.calc_montage .pp_radio.checked').dataset.value === 'true' ? parseInt(document.querySelector('.calc_montage .pp_selected').dataset.value) : 0; // Монтаж
+
+        let result = document.querySelector('.row_result'); // Результат на странице
+
+        // Формула расчета и запись результата
+        result.innerText = area * (panel + winterizing + subsystem + montage);
+
+        result.innerText += ' руб.'
+
+        // Вывод цен в консоли
+        console.log('Площадь: ' + area);
+        console.log('Толщина панели: ' + panel);
+        console.log('Утепление: ' + winterizing);
+        console.log('Подсистема с доп. эл.: ' + subsystem);
+        console.log('Монтаж: ' + montage);
+        console.log(' ');
+        console.log('***');
+        console.log(' ');
+    }
+
+    // Отправка формы
+
+    let formCalc = document.querySelector('.calc_form');
+    let submitBtn = formCalc.querySelector('input[type="submit"]');
+    formCalc.addEventListener('submit', e => {
+        e.preventDefault();
+        if (!phoneInput.value || phoneInput.value.length < 18) {
+            phoneInput.classList.add('error');
+            setTimeout(() => {
+                phoneInput.classList.remove('error');
+            }, 1000)
+        } else {
+            submitBtn.value = 'Отправляется...';
+            submitBtn.disabled = true;
+            let formData = new FormData(formCalc);
+            formData.forEach(function (value, key) {
+                obj[key] = value;
+            });
+            obj['area'] = document.querySelector('.calc_area input').value;
+            obj['panel'] = document.querySelector('.calc_thickness .pp_selected').innerHTML;
+            obj['winterizing'] = document.querySelector('.calc_warm .pp_radio.checked').innerHTML;
+            obj['subsystem'] = document.querySelector('.calc_subsystem .pp_selected').innerHTML;
+            obj['montage'] = document.querySelector('.calc_montage .pp_radio.checked').dataset.value === 'true' ? document.querySelector('.calc_montage .pp_selected').innerHTML : 'Нет';
+            obj['price'] = document.querySelector('.row_result').innerHTML;
+            let xhr = new XMLHttpRequest();
+            xhr.open('POST', 'send.php');
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('param=' + JSON.stringify(obj));
+            xhr.addEventListener("readystatechange", () => {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.response);
+                    submitBtn.value = 'Отправлено!';
+                    setTimeout(() => {
+                        submitBtn.value = 'Отправить';
+                        submitBtn.disabled = false;
+                    }, 2000)
+                }
+            });
+        }
+    });
+
+
+    window.addEventListener('load', () => {
+        calc()
+    });
+</script>
+</body>
+</html>
